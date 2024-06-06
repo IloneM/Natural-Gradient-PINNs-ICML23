@@ -5,7 +5,7 @@ Implementation of the compuational domains.
 import jax.numpy as jnp
 from jax import random
 import math
-from itertools import product
+from jax import vmap
 
 class Hyperrectangle():
     """
@@ -80,6 +80,31 @@ class Hyperrectangle():
                 shape=(N, self._dimension),
                 ),
         )
+
+    def deterministic_integration_points(self, N: int):
+        """
+        Grid based integration points.
+
+        Parameters
+        ----------
+        N: int
+            N is the number of integration points in [0,1] meaning
+            that in [0,1]^d there are N^d integration points.
+        
+        """
+        lengths = jnp.ceil(self._r_bounds - self._l_bounds)
+        Ms = jnp.maximum(lengths * N, 2)
+
+        int_indexes = jnp.meshgrid(*(jnp.arange(1, m-1) for m in Ms), indexing='ij')
+
+        # of shape (n,d)
+        hyperrectangleCoors = jnp.stack([(coorsi * l / (m-1) + l_b).flatten()
+                                         for coorsi, l, m, l_b in zip(int_indexes, lengths, Ms, self._l_bounds)], axis=-1)
+
+        if hyperrectangleCoors.shape[0] == 0:
+            raise Exception("Too few points to resolve the hyperrectangle.")
+        
+        return hyperrectangleCoors
 
 class Square(Hyperrectangle):
     """
