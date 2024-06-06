@@ -5,6 +5,7 @@ Implementation of the compuational domains.
 import jax.numpy as jnp
 from jax import random
 import math
+from itertools import product
 
 class Hyperrectangle():
     """
@@ -294,7 +295,7 @@ class RectangleBoundary():
         )
 
         # padding
-        a_0_s = a_0 * jnp.ones(shape = (M_0 - 1, 1))
+        a_0_s = a_0 * jnp.ones(shape = (M_1 - 1, 1))
         b_0_s = b_0 * jnp.ones(shape = (M_1 - 1, 1))
         a_1_s = a_1 * jnp.ones(shape = (M_0 - 1, 1))
         b_1_s = b_1 * jnp.ones(shape = (M_0 - 1, 1))
